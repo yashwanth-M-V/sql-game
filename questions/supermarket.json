@@ -1,0 +1,244 @@
+[
+    {
+        "id": 1,
+        "difficulty": "beginner",
+        "question": "List all products.",
+        "answer": "SELECT * FROM products;"
+    },
+    {
+        "id": 2,
+        "difficulty": "beginner",
+        "question": "Show the first 10 customers.",
+        "answer": "SELECT * FROM customers LIMIT 10;"
+    },
+    {
+        "id": 3,
+        "difficulty": "beginner",
+        "question": "Count how many categories exist.",
+        "answer": "SELECT COUNT(*) FROM categories;"
+    },
+    {
+        "id": 4,
+        "difficulty": "beginner",
+        "question": "Find the total number of products.",
+        "answer": "SELECT COUNT(*) FROM products;"
+    },
+    {
+        "id": 5,
+        "difficulty": "beginner",
+        "question": "Show the names of all employees.",
+        "answer": "SELECT name FROM employees;"
+    },
+
+    {
+        "id": 6,
+        "difficulty": "intermediate",
+        "question": "List all products with their category name.",
+        "answer": "SELECT p.product_id, p.product_name, c.category_name FROM products p JOIN categories c ON p.category_id = c.category_id;"
+    },
+    {
+        "id": 7,
+        "difficulty": "intermediate",
+        "question": "Find all customers whose email ends with 'example.com'.",
+        "answer": "SELECT * FROM customers WHERE email LIKE '%example.com';"
+    },
+    {
+        "id": 8,
+        "difficulty": "intermediate",
+        "question": "Show all inventory items where quantity is below reorder level.",
+        "answer": "SELECT * FROM inventory WHERE quantity_in_stock < reorder_level;"
+    },
+    {
+        "id": 9,
+        "difficulty": "intermediate",
+        "question": "Find the total number of carts created.",
+        "answer": "SELECT COUNT(*) FROM carts;"
+    },
+    {
+        "id": 10,
+        "difficulty": "intermediate",
+        "question": "List the top 5 most expensive products.",
+        "answer": "SELECT product_name, price FROM products ORDER BY price DESC LIMIT 5;"
+    },
+    {
+        "id": 11,
+        "difficulty": "intermediate",
+        "question": "Show the total number of sales transactions (bills).",
+        "answer": "SELECT COUNT(*) FROM bills;"
+    },
+    {
+        "id": 12,
+        "difficulty": "intermediate",
+        "question": "Find all suppliers that contain the word 'Co' in their name.",
+        "answer": "SELECT * FROM suppliers WHERE supplier_name LIKE '%Co%';"
+    },
+    {
+        "id": 13,
+        "difficulty": "intermediate",
+        "question": "Show the number of products in each category.",
+        "answer": "SELECT category_id, COUNT(*) AS product_count FROM products GROUP BY category_id;"
+    },
+    {
+        "id": 14,
+        "difficulty": "intermediate",
+        "question": "List all bills with their customer name.",
+        "answer": "SELECT b.bill_id, c.name, b.total_amount FROM bills b LEFT JOIN customers c ON b.customer_id = c.customer_id;"
+    },
+    {
+        "id": 15,
+        "difficulty": "intermediate",
+        "question": "Show all cart items along with the customer name.",
+        "answer": "SELECT ci.cart_item_id, cu.name, ci.product_id, ci.quantity FROM cart_items ci JOIN carts ca ON ci.cart_id = ca.cart_id JOIN customers cu ON ca.customer_id = cu.customer_id;"
+    },
+
+    {
+        "id": 16,
+        "difficulty": "advanced",
+        "question": "Find the total sales amount for each product.",
+        "answer": "SELECT product_id, SUM(total_price) AS total_sales FROM bill_items GROUP BY product_id ORDER BY total_sales DESC;"
+    },
+    {
+        "id": 17,
+        "difficulty": "advanced",
+        "question": "Show the top 5 customers by net amount spent.",
+        "answer": "SELECT c.customer_id, c.name, SUM(b.net_amount) AS total_spent FROM bills b JOIN customers c ON b.customer_id = c.customer_id GROUP BY c.customer_id ORDER BY total_spent DESC LIMIT 5;"
+    },
+    {
+        "id": 18,
+        "difficulty": "advanced",
+        "question": "List the most popular products by quantity sold.",
+        "answer": "SELECT product_id, SUM(quantity) AS total_qty FROM bill_items GROUP BY product_id ORDER BY total_qty DESC;"
+    },
+    {
+        "id": 19,
+        "difficulty": "advanced",
+        "question": "Find employees who have roles containing the word 'Manager'.",
+        "answer": "SELECT * FROM employees WHERE role LIKE '%Manager%';"
+    },
+    {
+        "id": 20,
+        "difficulty": "advanced",
+        "question": "Find products that have never been sold.",
+        "answer": "SELECT p.product_id, p.product_name FROM products p LEFT JOIN bill_items bi ON p.product_id = bi.product_id WHERE bi.product_id IS NULL;"
+    },
+    {
+        "id": 21,
+        "difficulty": "advanced",
+        "question": "Find customers who have made more than 2 purchases.",
+        "answer": "SELECT customer_id, COUNT(*) AS num_bills FROM bills GROUP BY customer_id HAVING num_bills > 2;"
+    },
+    {
+        "id": 22,
+        "difficulty": "advanced",
+        "question": "Find suppliers who supplied more than 2 purchase orders.",
+        "answer": "SELECT supplier_id, COUNT(*) AS num_orders FROM purchase_orders GROUP BY supplier_id HAVING num_orders > 2;"
+    },
+    {
+        "id": 23,
+        "difficulty": "advanced",
+        "question": "Calculate the average selling price per product.",
+        "answer": "SELECT product_id, AVG(selling_price) AS avg_price FROM bill_items GROUP BY product_id;"
+    },
+    {
+        "id": 24,
+        "difficulty": "advanced",
+        "question": "Identify customers who bought both product_id 1 AND product_id 3.",
+        "answer": "SELECT customer_id FROM bill_items bi JOIN bills b ON bi.bill_id = b.bill_id WHERE product_id IN (1,3) GROUP BY customer_id HAVING COUNT(DISTINCT product_id) = 2;"
+    },
+    {
+        "id": 25,
+        "difficulty": "advanced",
+        "question": "Show the total quantity sold per category.",
+        "answer": "SELECT c.category_name, SUM(bi.quantity) AS total_qty FROM bill_items bi JOIN products p ON bi.product_id = p.product_id JOIN categories c ON p.category_id = c.category_id GROUP BY c.category_id;"
+    },
+    {
+        "id": 26,
+        "difficulty": "advanced",
+        "question": "Find days with total sales over 20 units (net amount).",
+        "answer": "SELECT DATE(bill_date) AS date, SUM(net_amount) AS total FROM bills GROUP BY DATE(bill_date) HAVING total > 20;"
+    },
+    {
+        "id": 27,
+        "difficulty": "advanced",
+        "question": "Show the most active customer based on cart creation.",
+        "answer": "SELECT customer_id, COUNT(*) AS carts FROM carts GROUP BY customer_id ORDER BY carts DESC LIMIT 1;"
+    },
+    {
+        "id": 28,
+        "difficulty": "advanced",
+        "question": "List suppliers and total items they supplied.",
+        "answer": "SELECT s.supplier_name, SUM(poi.quantity) AS total_qty FROM suppliers s JOIN purchase_orders po ON s.supplier_id = po.supplier_id JOIN purchase_order_items poi ON po.po_id = poi.po_id GROUP BY s.supplier_id ORDER BY total_qty DESC;"
+    },
+    {
+        "id": 29,
+        "difficulty": "advanced",
+        "question": "Find products with inventory below 50 units.",
+        "answer": "SELECT p.product_name, i.quantity_in_stock FROM inventory i JOIN products p ON i.product_id = p.product_id WHERE quantity_in_stock < 50;"
+    },
+    {
+        "id": 30,
+        "difficulty": "advanced",
+        "question": "Show all customers and their total quantity of items purchased.",
+        "answer": "SELECT c.customer_id, c.name, SUM(bi.quantity) AS total_items FROM customers c JOIN bills b ON c.customer_id = b.customer_id JOIN bill_items bi ON b.bill_id = bi.bill_id GROUP BY c.customer_id ORDER BY total_items DESC;"
+    },
+    {
+        "id": 31,
+        "difficulty": "advanced",
+        "question": "Show the average items per bill.",
+        "answer": "SELECT AVG(item_count) FROM (SELECT bill_id, SUM(quantity) AS item_count FROM bill_items GROUP BY bill_id);"
+    },
+    {
+        "id": 32,
+        "difficulty": "advanced",
+        "question": "Find the highest priced item sold by category.",
+        "answer": "SELECT c.category_name, MAX(bi.selling_price) AS highest_price FROM bill_items bi JOIN products p ON bi.product_id = p.product_id JOIN categories c ON p.category_id = c.category_id GROUP BY c.category_id;"
+    },
+    {
+        "id": 33,
+        "difficulty": "advanced",
+        "question": "Show customers who spent more than the average net amount.",
+        "answer": "SELECT customer_id, SUM(net_amount) AS total_spent FROM bills GROUP BY customer_id HAVING total_spent > (SELECT AVG(net_amount) FROM bills);"
+    },
+    {
+        "id": 34,
+        "difficulty": "advanced",
+        "question": "Find the percentage contribution of each category to total sales.",
+        "answer": "SELECT c.category_name, (SUM(bi.total_price) * 100.0 / (SELECT SUM(total_price) FROM bill_items)) AS percentage FROM bill_items bi JOIN products p ON bi.product_id = p.product_id JOIN categories c ON p.category_id = c.category_id GROUP BY c.category_id;"
+    },
+    {
+        "id": 35,
+        "difficulty": "advanced",
+        "question": "Show repeat customers (those who have carts more than once).",
+        "answer": "SELECT customer_id, COUNT(*) AS carts FROM carts GROUP BY customer_id HAVING COUNT(*) > 1;"
+    },
+    {
+        "id": 36,
+        "difficulty": "advanced",
+        "question": "Find products whose inventory stock equals reorder level.",
+        "answer": "SELECT p.product_name, i.quantity_in_stock FROM inventory i JOIN products p ON i.product_id = p.product_id WHERE quantity_in_stock = reorder_level;"
+    },
+    {
+        "id": 37,
+        "difficulty": "advanced",
+        "question": "Show suppliers who provided more than 50 total items (sum of quantities).",
+        "answer": "SELECT s.supplier_id, s.supplier_name, SUM(poi.quantity) AS total_qty FROM suppliers s JOIN purchase_orders po ON s.supplier_id = po.supplier_id JOIN purchase_order_items poi ON po.po_id = poi.po_id GROUP BY s.supplier_id HAVING total_qty > 50;"
+    },
+    {
+        "id": 38,
+        "difficulty": "advanced",
+        "question": "Find customers who have never made a purchase.",
+        "answer": "SELECT c.customer_id, c.name FROM customers c LEFT JOIN bills b ON c.customer_id = b.customer_id WHERE b.customer_id IS NULL;"
+    },
+    {
+        "id": 39,
+        "difficulty": "advanced",
+        "question": "List products ordered in purchase_orders but never sold to customers.",
+        "answer": "SELECT DISTINCT p.product_id, p.product_name FROM products p JOIN purchase_order_items poi ON p.product_id = poi.product_id LEFT JOIN bill_items bi ON p.product_id = bi.product_id WHERE bi.product_id IS NULL;"
+    },
+    {
+        "id": 40,
+        "difficulty": "advanced",
+        "question": "Calculate the total profit per product (selling price - cost price).",
+        "answer": "SELECT p.product_id, p.product_name, SUM((bi.selling_price - p.cost_price) * bi.quantity) AS total_profit FROM products p JOIN bill_items bi ON p.product_id = bi.product_id GROUP BY p.product_id ORDER BY total_profit DESC;"
+    }
+]
