@@ -27,26 +27,42 @@ with open("questions/supermarket.json", "r") as f:
 question_list = [q["question"] for q in QUESTIONS]
 
 # ----------------------------------------
-# SESSION POINTS
+# SESSION STATE VARIABLES
 # ----------------------------------------
 if "points" not in st.session_state:
     st.session_state.points = 0
 
+if "current_question_index" not in st.session_state:
+    st.session_state.current_question_index = 0
+
+# Utility
+def get_current_question():
+    question_text = question_list[st.session_state.current_question_index]
+    return next(q for q in QUESTIONS if q["question"] == question_text)
+
+
 # ----------------------------------------
-# SIDEBAR CONTROLS
+# SIDEBAR CONTENT
 # ----------------------------------------
 st.sidebar.header("🎯 Game Controls")
 
-selected_question_text = st.sidebar.selectbox(
-    "Choose a Question", question_list
-)
+current_q = get_current_question()
 
-selected_question = next(
-    q for q in QUESTIONS if q["question"] == selected_question_text
-)
+st.sidebar.write("### Current Question:")
+st.sidebar.write(current_q["question"])
 
-st.sidebar.write("**Difficulty:**", selected_question.get("difficulty", "Unknown"))
+st.sidebar.write("**Difficulty:**", current_q.get("difficulty", "Unknown"))
+
 st.sidebar.metric("⭐ Points", st.session_state.points)
+
+# Skip / Next Question button
+if st.sidebar.button("⏭ Next Question"):
+    if st.session_state.current_question_index < len(question_list) - 1:
+        st.session_state.current_question_index += 1
+    else:
+        st.success("You've completed all questions!")
+        st.balloons()
+
 
 # ----------------------------------------
 # DATABASE EXPLORER
@@ -61,34 +77,38 @@ with tabs[0]:
     st.dataframe(pd.DataFrame({"Tables": all_tables}))
 
 with tabs[1]:
-    selected_table_schema = st.selectbox("Choose a table to view schema:", all_tables)
-    st.write(f"Schema for **{selected_table_schema}**:")
-    st.dataframe(get_table_schema(selected_table_schema))
+    selected_schema_table = st.selectbox("Choose a table to view schema:", all_tables)
+    st.write(f"Schema for **{selected_schema_table}**:")
+    st.dataframe(get_table_schema(selected_schema_table))
 
 with tabs[2]:
-    selected_table_preview = st.selectbox("Choose a table to preview:", all_tables)
-    st.write(f"Preview of **{selected_table_preview}**:")
-    st.dataframe(get_table_preview(selected_table_preview))
+    selected_preview_table = st.selectbox("Choose a table to preview:", all_tables)
+    st.write(f"Preview of **{selected_preview_table}**:")
+    st.dataframe(get_table_preview(selected_preview_table))
+
 
 # ----------------------------------------
 # SQL GAME SECTION
 # ----------------------------------------
 st.subheader("🧠 Solve the SQL Challenge")
 
-st.markdown(f"### ❓ {selected_question_text}")
+st.markdown(f"### ❓ {current_q['question']}")
 
 user_sql = st.text_area("Write your SQL query here:", height=150)
 
+# RUN SQL BUTTON
 if st.button("▶️ Run SQL Query"):
     if not user_sql.strip():
         st.warning("Please enter an SQL query first.")
     else:
         try:
+            # Run user query
             user_df = run_user_query(user_sql)
-            correct_df = run_correct_query(selected_question["answer"])
-
             st.write("### 📊 Your Result")
             st.dataframe(user_df)
+
+            # Run correct query
+            correct_df = run_correct_query(current_q["answer"])
 
             # Compare results
             try:
@@ -98,18 +118,26 @@ if st.button("▶️ Run SQL Query"):
                 if user_sorted.equals(correct_sorted):
                     st.success("🎉 Correct answer! +10 points")
                     st.session_state.points += 10
+
+                    # Move to next question automatically
+                    if st.session_state.current_question_index < len(question_list) - 1:
+                        st.session_state.current_question_index += 1
+                        st.info("➡️ Moving to next question...")
+                    else:
+                        st.balloons()
+                        st.success("🎉 You've completed all questions!")
                 else:
                     st.error("❌ Incorrect. Try again!")
-                    st.info("Tip: Check your JOINs, GROUP BY, or WHERE conditions.")
+                    st.info("Hint: Compare columns, joins, and filters.")
+
             except:
-                st.error("Could not compare results due to mismatched columns or types.")
+                st.error("Could not compare results (different columns or data types).")
 
         except Exception as e:
             st.error(f"SQL Error: {e}")
 
 # ----------------------------------------
-# SHOW ANSWER
+# SHOW ANSWER BUTTON
 # ----------------------------------------
 if st.sidebar.button("👀 Show Correct Answer"):
-    st.sidebar.code(selected_question["answer"], language="sql")
-
+    st.sidebar.code(current_q["answer"], language="sql")
