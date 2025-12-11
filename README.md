@@ -1,6 +1,9 @@
-🛒 Supermarket SQL Game
+# 🛒 Supermarket SQL Game
 
 A fun, interactive way to learn SQL using a realistic supermarket database.
+
+check the game in 
+https://begineer-sql-game.streamlit.app/
 
 📌 Overview
 
